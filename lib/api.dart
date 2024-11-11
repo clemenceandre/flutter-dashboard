@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'package:intl/intl.dart';
 
 class AmadeusApi {
   static const String apiKey =
@@ -29,6 +28,8 @@ class AmadeusApi {
       Uri.parse('$corsProxyUrl$tokenUrl'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'origin': 'your-allowed-origin', // Remplacez par l'URL d'origine autorisée si nécessaire, par exemple 'https://votre-site.com'
+        'x-requested-with': 'XMLHttpRequest', // Ajout de l'en-tête requis
       },
       body: {
         'grant_type': 'client_credentials',
@@ -42,7 +43,7 @@ class AmadeusApi {
       print('Token d\'accès: ${data['access_token']}');
       return data['access_token'];
     } else {
-      throw Exception('Erreur d\'authentification: ${response.body}');
+      throw Exception('Erreur d\'authentification: ${response.statusCode}');
     }
   }
 
@@ -60,6 +61,8 @@ class AmadeusApi {
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
+        'origin': 'your-allowed-origin', // En-tête d'origine
+        'x-requested-with': 'XMLHttpRequest', // En-tête supplémentaire
       },
     );
 
@@ -75,7 +78,7 @@ class AmadeusApi {
       for (var item in data['data']) {
         final destinationName = item['destination'];
         final coords =
-            await getCoordinates(destinationName); // Récupère les coordonnées
+        await getCoordinates(destinationName); // Récupère les coordonnées
         if (coords['lat'] != null && coords['lng'] != null) {
           final cityAndCountry = await getCityAndCountry(
               coords['lat']!, coords['lng']!); // Récupère la ville et le pays
@@ -112,6 +115,8 @@ class AmadeusApi {
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
+        'origin': 'your-allowed-origin', // En-tête d'origine
+        'x-requested-with': 'XMLHttpRequest', // En-tête supplémentaire
       },
     );
 
@@ -145,6 +150,10 @@ class AmadeusApi {
   Future<Map<String, double>> getCoordinates(String cityName) async {
     final response = await http.get(
       Uri.parse('$corsProxyUrl$geocodingUrl?q=$cityName&key=$geocodingApiKey'),
+      headers: {
+        'origin': 'your-allowed-origin', // En-tête d'origine
+        'x-requested-with': 'XMLHttpRequest', // En-tête supplémentaire
+      },
     );
 
     if (response.statusCode == 200) {
@@ -169,6 +178,10 @@ class AmadeusApi {
     final response = await http.get(
       Uri.parse(
           '$corsProxyUrl$geocodingUrl?q=$latitude+$longitude&key=$geocodingApiKey'),
+      headers: {
+        'origin': 'your-allowed-origin', // En-tête d'origine
+        'x-requested-with': 'XMLHttpRequest', // En-tête supplémentaire
+      },
     );
 
     if (response.statusCode == 200) {

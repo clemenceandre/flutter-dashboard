@@ -4,13 +4,14 @@ import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'api.dart';
-import 'package:intl/intl.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,12 +19,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: FlightInspirationScreen(),
+      home: const FlightInspirationScreen(),
+      debugShowCheckedModeBanner: false, // Désactive le bandeau "debug"
     );
   }
 }
 
 class FlightInspirationScreen extends StatefulWidget {
+  const FlightInspirationScreen({super.key});
+
   @override
   _FlightInspirationScreenState createState() =>
       _FlightInspirationScreenState();
@@ -193,10 +197,10 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
                     right: 0, // Positionne le popup à droite
                     child: Container(
                       width: 300, // Largeur du popup
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(15),
                           bottomLeft: Radius.circular(15),
                         ),
@@ -204,7 +208,7 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
                           BoxShadow(
                             color: Colors.black.withOpacity(0.2),
                             blurRadius: 10,
-                            offset: Offset(5, 5),
+                            offset: const Offset(5, 5),
                           ),
                         ],
                       ),
@@ -215,20 +219,20 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
                           Text(
                             destination['destination'] ??
                                 'Destination inconnue',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text('Ville: ${destination['city'] ?? 'Inconnue'}'),
                           Text('Pays: ${destination['country'] ?? 'Inconnu'}'),
                           if (_cheapestFlightDetails != null) ...[
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             Card(
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Column(
                                   children: [
-                                    Text('Vol le moins cher',
+                                    const Text('Vol le moins cher',
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold)),
@@ -249,13 +253,13 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
                           ],
                           // Afficher les détails des autres dates si une correspondance est trouvée
                           if (matchedDate['prix'] != 'N/A') ...[
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             Card(
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Column(
                                   children: [
-                                    Text(
+                                    const Text(
                                         'Le prix le moins cher pour cette destination',
                                         style: TextStyle(
                                             fontSize: 18,
@@ -265,7 +269,7 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
                                         'Date Aller: ${matchedDate['allerDate']}'),
                                     Text(
                                         'Date Retour: ${matchedDate['retourDate']}'),
-                                    SizedBox(height: 20),
+                                    const SizedBox(height: 20),
                                     // Afficher un Slider de couleur en fonction du prix
                                     Slider(
                                       value: price,
@@ -284,8 +288,8 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
                             ),
                           ] else ...[
                             // Afficher un message si aucun prix n'est trouvé
-                            SizedBox(height: 20),
-                            Text(
+                            const SizedBox(height: 20),
+                            const Text(
                                 'Pas de meilleur prix disponible pour cette destination.',
                                 style: TextStyle(fontSize: 16)),
                           ],
@@ -316,7 +320,7 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inspiration de Vols'),
+        title: const Text('Inspiration de Vols'),
       ),
       body: Column(
         children: [
@@ -355,7 +359,7 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
           ),
           // Affichage de la carte ou du chargement
           _isLoading
-              ? Expanded(child: Center(child: CircularProgressIndicator()))
+              ? const Expanded(child: Center(child: CircularProgressIndicator()))
               : Expanded(
                   child: MapPage(
                       destinations: _destinations,
@@ -371,7 +375,7 @@ class MapPage extends StatelessWidget {
   final Function(BuildContext, Map<String, dynamic>)
       showDestinationDetails; // Change ici
 
-  MapPage({required this.destinations, required this.showDestinationDetails});
+  const MapPage({super.key, required this.destinations, required this.showDestinationDetails});
 
   Color _getColorForPrice(Map<String, dynamic> destination,
       List<Map<String, dynamic>> destinations) {
@@ -415,7 +419,7 @@ class MapPage extends StatelessWidget {
       children: [
         TileLayer(
           urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          subdomains: ['a', 'b', 'c'],
+          subdomains: const ['a', 'b', 'c'],
         ),
         MarkerLayer(
           markers: destinations.map((destination) {
