@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      debugShowCheckedModeBanner: false, // Enlève le bandeau debug
       home: FlightInspirationScreen(),
     );
   }
@@ -316,7 +317,15 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inspiration de Vols'),
+        title: Center(
+          child: Text(
+            'Inspiration de Vols',
+            style: TextStyle(
+              fontSize: 24, // Taille du texte ajustée
+              fontWeight: FontWeight.bold, // Poids du texte ajusté
+            ),
+          ),
+        ),
       ),
       body: Column(
         children: [
@@ -368,8 +377,7 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
 
 class MapPage extends StatelessWidget {
   final List<Map<String, dynamic>> destinations;
-  final Function(BuildContext, Map<String, dynamic>)
-      showDestinationDetails; // Change ici
+  final Function(BuildContext, Map<String, dynamic>) showDestinationDetails;
 
   MapPage({required this.destinations, required this.showDestinationDetails});
 
@@ -378,7 +386,7 @@ class MapPage extends StatelessWidget {
     double minPrice = double.infinity;
     double maxPrice = 0.0;
 
-    // Trouver les prix minimum et maximum
+    // Calcul des prix minimum et maximum
     for (var destination in destinations) {
       double prix = double.tryParse(destination['prix'] ?? '0') ?? 0.0;
       if (prix > 0) {
@@ -386,18 +394,14 @@ class MapPage extends StatelessWidget {
         if (prix > maxPrice) maxPrice = prix;
       }
     }
+
     double currentPrice = double.tryParse(destination['prix'] ?? '0') ?? 0.0;
 
-    // Si le prix est le minimum, retourner vert
     if (currentPrice == minPrice) {
-      return Colors.green; // Le moins cher en vert
-    }
-    // Si le prix est le maximum, retourner rouge
-    else if (currentPrice == maxPrice) {
-      return Colors.red; // Le plus cher en rouge
-    }
-    // Pour les autres prix, interpoler la couleur entre vert et rouge
-    else {
+      return Colors.green;
+    } else if (currentPrice == maxPrice) {
+      return Colors.red;
+    } else {
       double normalizedPrice =
           (currentPrice - minPrice) / (maxPrice - minPrice);
       return Color.lerp(Colors.green, Colors.red, normalizedPrice) ??
@@ -407,42 +411,44 @@ class MapPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-      options: MapOptions(
-        center: LatLng(20.0, 0.0),
-        zoom: 2.0,
-      ),
-      children: [
-        TileLayer(
-          urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          subdomains: ['a', 'b', 'c'],
+    return FractionallySizedBox(
+      alignment: Alignment.center,
+      widthFactor: 0.7, // Réduit la largeur de la carte de 10%
+      child: FlutterMap(
+        options: MapOptions(
+          center: LatLng(20.0, 0.0), // Positionnement de la carte
+          zoom: 2.0, // Niveau de zoom
+          interactiveFlags: InteractiveFlag
+              .none, // Désactive toutes les interactions (pas de pan, pas de zoom)
+          maxZoom: 2.0, // Limite du zoom
+          minZoom: 2.0, // Limite du zoom (pas de zoom in / zoom out)
         ),
-        MarkerLayer(
-          markers: destinations.map((destination) {
-            final latitude = destination['latitude'];
-            final longitude = destination['longitude'];
+        children: [
+          TileLayer(
+            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c'],
+          ),
+          MarkerLayer(
+            markers: destinations.map((destination) {
+              final latitude = destination['latitude'];
+              final longitude = destination['longitude'];
 
-            return Marker(
-              width: 30.0, // Taille de l'ombre
-              height: 30.0, // Taille de l'ombre
-              point: LatLng(latitude, longitude),
-              builder: (ctx) => Container(
-                alignment: Alignment.center,
-                child: GestureDetector(
+              return Marker(
+                width: 30.0, // Taille de l'ombre
+                height: 30.0, // Taille de l'ombre
+                point: LatLng(latitude, longitude),
+                builder: (ctx) => GestureDetector(
                   onTap: () {
                     showDestinationDetails(
-                        context, destination); // Afficher les détails sur clic
+                        context, destination); // Affichage des détails au clic
                   },
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      // Ombre
                       CircleAvatar(
-                        radius: 15, // Rayon de l'ombre
-                        backgroundColor:
-                            Colors.grey.withOpacity(0.5), // Couleur de l'ombre
+                        radius: 15,
+                        backgroundColor: Colors.grey.withOpacity(0.5),
                       ),
-                      // Pin
                       Icon(
                         Icons.location_on,
                         color: _getColorForPrice(destination, destinations),
@@ -451,11 +457,11 @@ class MapPage extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
+              );
+            }).toList(), // Assurez-vous de créer une liste de type List<Marker>
+          ),
+        ],
+      ),
     );
   }
 }
