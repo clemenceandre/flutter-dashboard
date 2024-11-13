@@ -73,12 +73,21 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
 
   // Méthode pour afficher l'animation de chargement
   Widget _buildLoadingIndicator() {
-    return Center(
-      child: Image.asset(
-        'assets/plane_loading.gif',
-        width: 150, // Ajuste la taille selon tes besoins
-        height: 150,
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // On obtient la largeur et la hauteur du parent (MapPage dans ce cas)
+        double width = constraints.maxWidth;
+        double height = constraints.maxHeight;
+
+        // On ajuste la taille du gif en fonction de ces dimensions
+        return Center(
+          child: Image.asset(
+            'assets/plane_loading.gif',
+            width: width * 1.3, // Ajuste ici le pourcentage de la taille de la carte
+            height: height * 1.3, // Ajuste ici le pourcentage de la taille de la carte
+          ),
+        );
+      },
     );
   }
 
@@ -407,11 +416,11 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
         _isLoading
             ? Expanded(child: Center(child: _buildLoadingIndicator())) // Remplacement ici
             : Expanded(
-          child: MapPage(
-            destinations: _destinations,
-            showDestinationDetails: _showDestinationDetails,
-          ),
-        ),
+              child: MapPage(
+                destinations: _destinations,
+                showDestinationDetails: _showDestinationDetails,
+              ),
+            ),
       ],
     );
   }
