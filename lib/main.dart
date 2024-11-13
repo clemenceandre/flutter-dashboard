@@ -71,6 +71,18 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
     _getOtherDates();
   }
 
+  // Méthode pour afficher l'animation de chargement
+  Widget _buildLoadingIndicator() {
+    return Center(
+      child: Image.asset(
+        'assets/plane_loading.gif',
+        width: 150, // Ajuste la taille selon tes besoins
+        height: 150,
+      ),
+    );
+  }
+
+
   // Méthode pour obtenir les inspirations de vol
   void _getFlightInspiration() async {
     String departureDate =
@@ -391,13 +403,15 @@ class _FlightInspirationScreenState extends State<FlightInspirationScreen> {
             );
           }).toList(),
         ),
-        // Affichage de la carte ou du chargement
+        // Affichage de la carte ou de l'animation de chargement
         _isLoading
-            ? const Expanded(child: Center(child: CircularProgressIndicator()))
-            : Expanded(child: MapPage(
+            ? Expanded(child: Center(child: _buildLoadingIndicator())) // Remplacement ici
+            : Expanded(
+          child: MapPage(
             destinations: _destinations,
-            showDestinationDetails: _showDestinationDetails
-        )),
+            showDestinationDetails: _showDestinationDetails,
+          ),
+        ),
       ],
     );
   }
