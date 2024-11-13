@@ -443,14 +443,15 @@ class MapPage extends StatelessWidget {
     return FractionallySizedBox(
       alignment: Alignment.center,
       widthFactor: 1, // Réduit la largeur de la carte de 10%
+
       child: FlutterMap(
         options: MapOptions(
           center: LatLng(20.0, 0.0), // Positionnement de la carte
-          zoom: 1.7, // Niveau de zoom
+          zoom: 2, // Niveau de zoom
           interactiveFlags: InteractiveFlag
               .none, // Désactive toutes les interactions (pas de pan, pas de zoom)
-          maxZoom: 2.0, // Limite du zoom
-          minZoom: 2.0, // Limite du zoom (pas de zoom in / zoom out)
+          maxZoom: 6.0, // Limite du zoom
+          minZoom: 1.7, // Limite du zoom (pas de zoom in / zoom out)
         ),
         children: [
           TileLayer(
