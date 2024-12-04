@@ -55,7 +55,7 @@ Avant de lancer l'application, vous devez :
 
 1. Clonez le repository
 ```
-git clone [url-du-repo]
+git clone https://github.com/clemenceandre/flutter-dashboard.git
 ```
 
 2. Installez les dépendances
